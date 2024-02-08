@@ -9,10 +9,19 @@ int LED_Front_Left = 10;
 int LED_Front_Right = 11;
 int LED_Back_Right = 12;
 
+//declare acceleration and rotation variables 
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
+
+float Calibration_gx, Calibration_gy, Calibration_gz;
+int CalibrationNumber;
 //value for when light turns on
 //max_top = 0;
 
 //max bottom = -1 * max_top;
+
+
+  
 
 void setup() {
   Serial.begin(9600);
@@ -27,16 +36,30 @@ void setup() {
     Serial.println("MPU-6050 connection failed");
     while (1);
   }
-}
-
+  //perform calibration measurements
+  for(CalibrationNumber = 0; CalibrationNumber < 2000; CalibrationNumber++){
+    mpu.getRotation(&gx, &gy, &gz);
+    Calibration_gx += gx;
+    Calibration_gy += gy;
+    Calibration_gz += gz;
+    delay(1);
+  }
+  //calculate calibration values
+  Calibration_gx /= 2000;
+  Calibration_gy /= 2000;
+  Calibration_gz /= 2000;
+  }
+  
 void loop() {
   // Read accelerometer data
-  int16_t ax, ay, az;
   mpu.getAcceleration(&ax, &ay, &az);
-
+  
   // Read gyroscope data
-  int16_t gx, gy, gz;
   mpu.getRotation(&gx, &gy, &gz);
+  //Change to calibrated data
+  gx -= Calibration_gx;
+  gy -= Calibration_gy;
+  gz -= Calibration_gz;
 
   // Display accelerometer and gyroscope data on the serial monitor
   Serial.print(" | Accel X: "); Serial.print(ax);
