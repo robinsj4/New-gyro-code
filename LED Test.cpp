@@ -16,9 +16,9 @@ int16_t gx, gy, gz;
 float Calibration_gx, Calibration_gy, Calibration_gz;
 int CalibrationNumber;
 //value for when light turns on
-//max_top = 0;
+int max_top = 0;
 
-//max bottom = -1 * max_top;
+int max_bottom = -1 * max_top;
 
 
   
@@ -48,6 +48,7 @@ void setup() {
   Calibration_gx /= 2000;
   Calibration_gy /= 2000;
   Calibration_gz /= 2000;
+  Serial.println("Calibration Succesful...");
   }
   
 void loop() {
@@ -69,7 +70,7 @@ void loop() {
   Serial.print(" | Gyro Y: "); Serial.print(gy);
   Serial.print(" | Gyro Z: "); Serial.println(gz);
 
-//rotation greater than set value
+   //rotation greater than set value
   if (gy > max_top){
     //turn on pins 11 and 12
     digitalWrite(LED_Front_Left, LOW);
@@ -99,4 +100,4 @@ void loop() {
     digitalWrite(LED_Back_Right, LOW);
   }
   delay(500); // Adjust the delay as needed
-}
+} 
